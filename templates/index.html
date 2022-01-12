@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction of Medical Supplies</title>
+</head>
+
+<body>
+    <div class="header">
+        
+        <div class="site-logo">
+            <image src="{{url_for ('static' , filename='logo1.png')}}" alt="medical supplies" height="50" width="60"><a style="color: #45B39D;display: flex;align-items: center;
+            font-weight: bold;font-size: 2rem;text-shadow: 2px 2px grey;">PREDOM</a>
+        </div>
+        <div class="header-right">
+            <a class="home" href="#home">Home</a>
+            <a href="#contact">Contact</a>
+            <a href="#about">About</a>
+        </div>
+    </div>
+    <div style="padding-left:20px">
+        <h1>Prediction of Medical Supplies</h1>
+    </div>
+    <div style="color:black"  >
+        <form action="{{ url_for('predict')}}" method="post">
+
+        <div class="row">
+
+            <div class="column1" style="background-color:white";>
+                <img src="{{url_for ('static' , filename='medicine.jpeg')}}" alt="medical supplies" height="430" width="660">
+            </div>
+
+            <div class="column2" style="background-color:#bbb;">
+                <h3><b>Category</b></h3><select name="adults" required="required">    
+                    <option value="1">Adults</option>
+                    <option value="0">Child</option>
+                </select>
+                <h3>Medicine Names</h3><select name="meds_name_corex" required="required">
+                    <option value="corex">Corex</option>
+                    <option value="crocin">Crocin</option>
+                    <option value="disprin">Disprin</option>
+                    <option value="nizer">Nizer</option>
+                    <option value="paracetamol">Paracetamol</option>
+                    <option value="vibact">Vibact</option>
+                </select>
+                <h3><b>Market Segment</b></h3>
+                    <select id="ms" name="market_segment_Online" required="required">
+                        <option value="Online">Online</option>
+                        <option value="Direct">Direct</option>
+                    </select>
+                <h3><b>Cutomer Type</b></h3>
+                    <select id="ctg" name="customer_type_Group" required="required">
+                        <option value="Group">Group</option>
+                        <option value="Transient">Transient</option>  
+                    </select>    
+                <br><br><br><button id="sub" type="submit" onclick="myFunction()">SUBMIT</button>
+                <br><h3 style="color: #bbb;;">Estimated Arrival Time : {{ prediction_text }}
+            </div>    
+
+            <div class="column3" style="background-color:#ccc;">
+
+                <h3>Select Entry Date : </h3><br>
+                <select id="days" name="arrival_date_day" required="required" >
+                    <option value="1">01</option><option value="2">02</option><option value="3">03</option><option value="4">04</option><option value="5">05</option>
+                    <option value="6">06</option><option value="7">07</option><option value="8">08</option><option value="9">09</option><option value="10">10</option>
+                    <option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option>
+                    <option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
+                    <option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option>
+                    <option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option> 
+                    <option value="31">31</option>                                                               
+                </select>  
+                <select id="month" name="arrival_month" required="required" >
+                    <option value="1">Jannuary</option><option value="2">February</option><option value="3">March</option>
+                    <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+                    <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+                    <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                </select>
+                <select id="year" name="arrival_year" required="required" >
+                    <option value="2010">2010</option><option value="2011">2011</option><option value="2012">2012</option><option value="2013">2013</option>
+                    <option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option>
+                    <option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option>
+                    <option value="2022">2022</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option>
+                    <option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
+                    <option value="2030">2030</option>
+                </select>   
+                <br><br><br>
+                <button id="eta" type="button" onclick="fixdate()">ETA</button>
+                <h3><br><br>Next Consignment Date : <br><br><t id="fixdate"></t>
+            </div>
+        </div>
+        </form>
+    </div>
+    <div class="footer" style="color:black">
+        <p>&copy; 2022 <a href="https://www.brainwareuniversity.ac.in/" target="_blank" rel="noopener noreferrer">BRAINWARE UNIVERSITY.</a> All Rights Reserved.<br>
+        Minor Project | Author: Subrata Maiti, Arindam Saha, Aditya Sankar Maity</p>
+    </div>
+
+    <script>
+        var data = "{{ prediction_text }}";
+        var datafloat = parseFloat(data);
+        var intvalue = Math.round( datafloat );
+
+        //document.getElementById("rlt").innerHTML = parseFloat(data);
+        //document.getElementById("result").innerHTML = intvalue;
+
+        function fixdate(){
+            var day = document.getElementById('days');
+            var mon = document.getElementById('month');
+            var yer = document.getElementById('year');
+            var x = parseInt(day.value);
+            var y = parseInt(mon.value);
+            var z = parseInt(yer.value);
+            var daycount = 0;
+            var adjustday = 0;
+
+            if(y==1 || y==3 || y==5 || y==7 || y==8 || y==10 || y==12){
+                daycount = x + intvalue;
+                adjustday = daycount - 31;
+                if(adjustday > 0){
+                    y++;
+                    x = adjustday;
+                    if(y>12){
+                        z++;
+                        y=1;
+                    }
+                }
+                else{
+                    x = daycount; 
+                }
+            }
+            else if(y==4 || y==6 || y==9 || y==11){
+                daycount = x + intvalue;
+                adjustday = daycount - 31;
+                if(adjustday > 0){
+                    y++;
+                    x = adjustday;
+                    if(y>12){
+                        z++;
+                    }
+                }
+                else{
+                    x = daycount; 
+                }
+            }
+            else if(y==2){
+                if(z%4==0){
+                    daycount = x + intvalue;
+                    adjustday = daycount - 29;
+                    if(adjustday > 0){
+                        y++;
+                        x = adjustday;
+                        if(y>12){
+                            z++;
+                        }
+                    }
+                    else{
+                        x = daycount; 
+                    }
+                }
+                else{
+                    daycount = x + intvalue;
+                    adjustday = daycount - 28;
+                    if(adjustday > 0){
+                        y++;
+                        x = adjustday;
+                        if(y>12){
+                            z++;
+                        }
+                    }
+                    else{
+                        x = daycount; 
+                    }
+                }
+            }
+            if(y==1){
+                y = "Jannuary";
+                document.getElementById("fixdate").innerHTML = y + " " + x + "," + " " + z;
+            }
+            else if(y==2){
+                y = "February";
+                document.getElementById("fixdate").innerHTML = y + " " + x + "," + " " + z;
+            }
+            else if(y==3){
+                y = "March";
+                document.getElementById("fixdate").innerHTML = y + " " + x + "," + " " + z;
+            }
+            else if(y==4){
+                y = "April";
+                document.getElementById("fixdate").innerHTML = y + " " + x + "," + " " + z;
+            }
+            else if(y==5){
+                y = "May";
+                document.getElementById("fixdate").innerHTML = y + " " + x + "," + " " + z;
+            }
+            else if(y==6){
+                y = "June";
+                document.getElementById("fixdate").innerHTML = y + " " + x + "," + " " + z;
+            }
+            else if(y==7){
+                y = "July";
+                document.getElementById("fixdate").innerHTML = y + " " + x + "," + " " + z;
+            }
+            else if(y==8){
+                y = "August";
+                document.getElementById("fixdate").innerHTML = y + " " + x + "," + " " + z;
+            }
+            else if(y==9){
+                y = "September";
+                document.getElementById("fixdate").innerHTML = y + " " + x + "," + " " + z;
+            }
+            else if(y==10){
+                y = "October";
+                document.getElementById("fixdate").innerHTML = y + " " + x + "," + " " + z;
+            }
+            else if(y==11){
+                y = "November";
+                document.getElementById("fixdate").innerHTML = y + " " + x + "," + " " + z;
+            }
+            else if(y==12){
+                y = "December";
+                document.getElementById("fixdate").innerHTML = y + " " + x + "," + " " + z;
+            }
+            else{
+                document.getElementById("fixdate").innerHTML = y + " " + x + "," + " " + z;
+
+            }
+        }
+    </script> 
+
+    <style>
+    * {box-sizing: border-box;}
+        body {
+            background-color: white;
+            text-align: center;
+            padding: 0px;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        #research {
+            font-size: 18px;
+            width: 100px;
+            height: 23px;
+            top: 23px;
+        }
+        #box {
+            border-radius: 60px;
+            border-color: 45px;
+            border-style: solid;
+            font-family: cursive;
+            text-align: center;
+            background-color: rgb(168, 131, 61);
+            font-size: medium;
+            position: absolute;
+            width: 700px;
+            bottom: 9%;
+            height: 850px;
+            right: 30%;
+            padding: 0px;
+            margin: 0px;
+            font-size: 14px;
+        }
+        #fuel {
+            width: 83px;
+            height: 43px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 20px;
+        }
+        #fuel:hover {
+            background-color: grey;
+        }
+        #research {
+            width: 200px;
+            height: 43px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 18px;
+        }
+        #research:hover {
+            background-color: coral;
+        }
+        #resea {
+            width: 200px;
+            height: 43px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 18px;
+        }
+        #resea:hover {
+            background-color: coral;
+        }
+        #sub {
+            width: 200px;
+            height: 43px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 18px;
+        }
+        #sub:hover {
+            background-color: darkcyan;
+        }
+        #eta {
+            width: 200px;
+            height: 43px;
+            text-align: center;
+            border-radius: 14px;
+            font-size: 18px;
+        }
+        #eta:hover {
+            background-color: darkcyan;
+        }
+        #first {
+            border-radius: 14px;
+            height: 25px;
+            font-size: 20px;
+            text-align: center;
+        }
+        #second {
+            border-radius: 14px;
+            height: 25px;
+            font-size: 20px;
+            text-align: center;
+        }
+        #third {
+            border-radius: 14px;
+            height: 25px;
+            font-size: 20px;
+            text-align: center;
+        }
+        #fourth {
+            border-radius: 14px;
+            height: 25px;
+            font-size: 20px;
+            text-align: center;
+        }
+        #fixdate{
+            color : red;
+        }
+        .header {
+          overflow: hidden;
+          background-color: #a6d608;
+          padding: 20px 10px;
+        }
+        .header a {
+          float: left;
+          color: black;
+          text-align: center;
+          padding: 12px;
+          text-decoration: none;
+          font-size: 18px; 
+          line-height: 25px;
+          border-radius: 4px;
+          font-weight: bold;
+
+        }
+        .header a:hover {
+          background-color: #ddd;
+          color: black;
+        }
+        .header a.active {
+          background-color: dodgerblue;
+          color: white;
+        }
+        .header-right {
+          float: right;
+        }
+        @media screen and (max-width: 500px) {
+          .header a {
+            float: none;
+            display: block;
+            text-align: left;
+          }
+          .header-right {
+            float: none;
+          }
+        }
+        img {
+          border-radius: 12px;
+          opacity: 1;
+          float: left;
+        }
+        .site-logo {
+            float:  left;
+            padding-left: 20px;
+        }
+        .column1 {
+          float: left;
+          width: 50%;
+          padding: 10px;
+          height: 460px;
+          border: 8px solid grey; 
+        }
+        .column2 {
+          float: left;
+          width: 25%;
+          padding: 10px;
+          height: 460px; 
+        }
+        .column3 {
+          float: left;
+          width: 25%;
+          padding: 10px;
+          height: 460px; 
+        }
+        .row:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+        .footer {
+          border-top: 10px solid white;
+          text-align: center;
+          padding: 3px;
+          background-color: #a6d608;
+          color: white;
+          font-weight: bold;
+        }
+    </style>
+</body>
+</html>
